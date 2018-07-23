@@ -44,7 +44,7 @@ void setup() {
   pinMode(6, OUTPUT);
   pinMode(7, OUTPUT);
 
-  // Get juicer baseline readings
+  // get juicer baseline readings
   baselineVals[0] = analogRead(JUICER_LEFT);
   baselineVals[1] = analogRead(JUICER_RIGHT);
   baselineVals[2] = analogRead(JUICER_UP);
@@ -115,10 +115,20 @@ void getJuicersPressed() {  // check if player has pressed juicer
     if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 15) { // actively pressing juicer if dif between previous and current val within 5
       juicersPressed[i] = true;
 
-      /*Serial.print("Juicer #");
-        Serial.print(i);
-        Serial.print(" pressed");
-        Serial.println();*/
+      switch (i) { 
+        case 0:
+          Keyboard.press(KEY_LEFT);
+          break;
+        case 1:
+          Keyboard.press(KEY_RIGHT);
+          break;
+        case 2:
+          Keyboard.press(KEY_UP);
+          break;
+        case 3:
+          Keyboard.press(KEY_DOWN);
+          break;
+      }
     }
     delay(1);
   }
@@ -127,10 +137,24 @@ void getJuicersPressed() {  // check if player has pressed juicer
 void getJuicersReleased() {  // check if juicer has been pressed and then released
   for (int i = 0; i < 4; i++) {
     if (!juicersPressed[i] && juicersReleased[i]) {
-      Serial.print("Juicer #");
-      Serial.print(i);
-      Serial.print(" released");
-      Serial.println();
+      switch (i) { 
+        case 0:
+          delay(1);
+          Keyboard.release(KEY_LEFT);
+          break;
+        case 1:
+          delay(1);
+          Keyboard.release(KEY_RIGHT);
+          break;
+        case 2:
+          delay(1);
+          Keyboard.release(KEY_UP);
+          break;
+        case 3:
+          delay(1);
+          Keyboard.release(KEY_DOWN);
+          break;
+      }
 
       // reset array setup for that juicer
       for (int j = 0; j < arraySize; j++) {
