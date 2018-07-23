@@ -8,23 +8,23 @@ byte juicersPressed[] = {false, false, false, false};
 byte juicersReleased[] = {false, false, false, false};
 
 // Arrays of juicer vals in order L, R, U, D
-byte baselineVals[4] = {0, 0, 0, 0};
-byte currentVals[4] = {0, 0, 0, 0};
-byte previousVals[4] = {0, 0, 0, 0};
+uint16_t baselineVals[4] = {0, 0, 0, 0};
+uint16_t currentVals[4] = {0, 0, 0, 0};
+uint16_t previousVals[4] = {0, 0, 0, 0};
 
 // Arrays for juicer pressed values
-byte const arraySize = 5;
-byte pushedVals[4][arraySize];
+const byte arraySize = 6;
+long pushedVals[4][arraySize];
 
 
 byte readIndexes[] = {0, 0, 0, 0};
-byte totals[] = {0, 0, 0, 0};
-byte averages[]  = {0, 0, 0, 0};
+long totals[] = {0, 0, 0, 0};
+float averages[]  = {0, 0, 0, 0};
 
 // Setup millis delay
 long startMillis;
 long currentMillis;
-const long period = 5;
+const long period = 7;
 
 
 void setup() {
@@ -71,7 +71,7 @@ void loop() {
         }
 
         averages[i] = totals[i] / arraySize;
-        delay(5);
+        delay(2);
 
         if (abs(averages[i] - baselineVals[i]) <= 2) {  // check if the difference between the running avg and the baseline val for any juicer is within 2
           juicersReleased[i] = true;
@@ -105,14 +105,14 @@ void getVals() {
   previousVals[3] = currentVals[3];
   currentVals[3] = analogRead(JUICER_DOWN);
 
-  delay(5);
+  delay(1);
 }
 
 
 
 void getJuicersPressed() {  // check if player has pressed juicer
   for (int i = 0; i < 4; i++) {
-    if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 5) { // actively pressing juicer if dif between previous and current val within 5
+    if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 15) { // actively pressing juicer if dif between previous and current val within 5
       juicersPressed[i] = true;
 
       /*Serial.print("Juicer #");
