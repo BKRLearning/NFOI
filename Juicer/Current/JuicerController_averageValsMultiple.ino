@@ -49,8 +49,6 @@ void setup() {
   baselineVals[1] = analogRead(JUICER_RIGHT);
   baselineVals[2] = analogRead(JUICER_UP);
   baselineVals[3] = analogRead(JUICER_DOWN);
-
-  //delay(1);
 }
 
 void loop() {
@@ -73,13 +71,14 @@ void loop() {
         }
 
         averages[i] = totals[i] / arraySize;
-        //delay(1);
+        delay(5);
 
         if (abs(averages[i] - baselineVals[i]) <= 2) {  // check if the difference between the running avg and the baseline val for any juicer is within 2
           juicersReleased[i] = true;
           juicersPressed[i] = false;
         }
       }
+      delay(1);
     }
 
     startMillis = currentMillis;
