@@ -3,6 +3,11 @@
 #define JUICER_UP 16
 #define JUICER_DOWN 15
 
+#define LED_LEFT 4
+#define LED_RIGHT 5
+#define LED_UP 6
+#define LED_DOWN 7
+
 // arrays for juicer pressed/released bools in order L, R, U, D
 byte juicersPressed[] = {false, false, false, false};
 byte juicersReleased[] = {false, false, false, false};
@@ -38,10 +43,10 @@ void setup() {
   }
 
   // LED outputs
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
+  pinMode(LED_LEFT, OUTPUT);
+  pinMode(LED_RIGHT, OUTPUT);
+  pinMode(LED_UP, OUTPUT);
+  pinMode(LED_DOWN, OUTPUT);
 
   // get juicer baseline readings
   baselineVals[0] = analogRead(JUICER_LEFT);
