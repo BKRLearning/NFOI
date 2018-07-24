@@ -3,25 +3,23 @@
 #define JUICER_UP 16
 #define JUICER_DOWN 15
 
-// Arrays of juicer vals in order L, R, U, D
+// arrays for juicer pressed/released bools in order L, R, U, D
 byte juicersPressed[] = {false, false, false, false};
 byte juicersReleased[] = {false, false, false, false};
 
-// Arrays of juicer vals in order L, R, U, D
-uint16_t baselineVals[4] = {0, 0, 0, 0};
-uint16_t currentVals[4] = {0, 0, 0, 0};
-uint16_t previousVals[4] = {0, 0, 0, 0};
+// arrays for juicer analog readings in order L, R, U, D
+uint16_t baselineVals[] = {0, 0, 0, 0};
+uint16_t currentVals[] = {0, 0, 0, 0};
+uint16_t previousVals[] = {0, 0, 0, 0};
 
-// Arrays for juicer pressed values
+// arrays for pressed juicer running avg values
 const byte arraySize = 6;
-long pushedVals[4][arraySize];
-
-
+long pushedVals[4][arraySize];    // 2D array contains 4 arrays with the last "arraySize" readings of each juicer to use for averaging 
 byte readIndexes[] = {0, 0, 0, 0};
 long totals[] = {0, 0, 0, 0};
 float averages[]  = {0, 0, 0, 0};
 
-// Setup millis delay
+// setup millis delay
 long startMillis;
 long currentMillis;
 const long period = 7;
@@ -32,6 +30,7 @@ void setup() {
 
   startMillis = millis();
 
+  // fill running avg arrays with zeros
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < arraySize; j++) {
       pushedVals[i][j] = 0;
@@ -54,11 +53,10 @@ void setup() {
 void loop() {
 
   currentMillis = millis();
-  if (currentMillis - startMillis >= period) {
+  if (currentMillis - startMillis >= period) {  // run this code every "period" (in ms)
 
     getVals(); // get current vals for each juicer
 
-    // Check if any juicers have been pressed
     for (int i = 0; i < 4; i++) {
       if (juicersPressed[i]) {  // if a particular juicer was pressed, then...
         totals[i] = totals[i] - pushedVals[i][readIndexes[i]];  // subtract the last value from the running total
@@ -66,12 +64,12 @@ void loop() {
         totals[i] = totals[i] + pushedVals[i][readIndexes[i]]; // add that value to the running total
         readIndexes[i]++; // update the index
 
-        if (readIndexes[i] >= arraySize) {  // reset the index number one it gets to the array size
+        if (readIndexes[i] >= arraySize) {  // reset the index number once it gets to the max array size
           readIndexes[i] = 0;
         }
 
         averages[i] = totals[i] / arraySize;
-        delay(2);
+        delay(1);
 
         if (abs(averages[i] - baselineVals[i]) <= 2) {  // check if the difference between the running avg and the baseline val for any juicer is within 2
           juicersReleased[i] = true;
@@ -85,14 +83,14 @@ void loop() {
   }
 
 
-  getJuicersPressed(); // Check if player has pressed juicer
-  getJuicersReleased(); // Check if player has released juicer
+  getJuicersPressed();    // check if player has pressed juicer
+  getJuicersReleased();   // check if player has released juicer
 
   delay(1);
 }
 
-// Get current values for each juicer
-void getVals() {
+
+void getVals() {  // get current values for each juicer
   previousVals[0] = currentVals[0];
   currentVals[0] = analogRead(JUICER_LEFT);
 
@@ -112,10 +110,10 @@ void getVals() {
 
 void getJuicersPressed() {  // check if player has pressed juicer
   for (int i = 0; i < 4; i++) {
-    if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 15) { // actively pressing juicer if dif between previous and current val within 5
+    if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 15) { // actively pressing juicer if dif between previous and current val within 15
       juicersPressed[i] = true;
 
-      switch (i) { 
+      switch (i) {
         case 0:
           Keyboard.press(KEY_LEFT);
           break;
@@ -134,7 +132,7 @@ void getJuicersPressed() {  // check if player has pressed juicer
   }
 }
 
-void getJuicersReleased() {  // check if juicer has been pressed and then released
+void getJuicersReleased() {  // check if juicer has been released after being pressed
   for (int i = 0; i < 4; i++) {
     if (!juicersPressed[i] && juicersReleased[i]) {
       switch (i) { 
@@ -156,7 +154,7 @@ void getJuicersReleased() {  // check if juicer has been pressed and then releas
           break;
       }
 
-      // reset array setup for that juicer
+      // reset averaging array setup for that juicer
       for (int j = 0; j < arraySize; j++) {
         pushedVals[i][j] = 0;
       }
