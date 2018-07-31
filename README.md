@@ -1,13 +1,20 @@
-**********
 New Forms of Interaction - Summer 2018
 ==========
+
+**********
+#NFOI
 **********
 
+Description text goes here ...
+Description text goes here ...
+Description text goes here ...
 Description text goes here ...
 
 Setup
 =========
 
+Setup text goes here ...
+Setup text goes here ...
 Setup text goes here ...
 
 
@@ -39,5 +46,5 @@ License
 
 Copyright 2018 Brooklyn Research and contributors.
 
-Licensed under the Apache License, Version 2.0. See the file LICENSE for the
+Licensed under the MIT License, Version 2.0. See the file LICENSE for the
 full license text.
