@@ -1,6 +1,6 @@
-#NFOI
 **********
 New Forms of Interaction - Summer 2018
+==========
 **********
 
 Description text goes here ...
