@@ -31,9 +31,9 @@ conROLLER
 Project resources
 =================
 
-- [Website] (#)
-- [Source code] (#)
-- [Scematics] (#)
+- [Website](http://www.brooklynresearch.org)
+- [Source code](#)
+- [Scematics](#)
 
 
 License
