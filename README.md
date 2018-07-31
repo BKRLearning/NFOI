@@ -1,20 +1,16 @@
-**************************************
-New Forms of Interaction - Summer 2018
-**************************************
-
-Description text goes here ...
-Description text goes here ...
-Description text goes here ...
-Description text goes here ...
+****
+# New Forms of Interaction - Summer 2018
+****
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
 Setup
 =========
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-Setup text goes here ...
-Setup text goes here ...
-Setup text goes here ...
-Setup text goes here ...
+1. Instruction
+2. Instruction
+3. Instruction
 
 
 JuicePad
@@ -35,9 +31,9 @@ conROLLER
 Project resources
 =================
 
-- _`Website <>`_
-- _`Source code <https://github.com/pimusicbox/pimusicbox>`_
-- _`Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
+- [Website] (#)
+- [Source code] (#)
+- [Scematics] (#)
 
 
 License
@@ -45,5 +41,5 @@ License
 
 Copyright 2018 Brooklyn Research and contributors.
 
-Licensed under the MIT, Version 2.0. See the file LICENSE for the
+Licensed under MIT, Version 2.0. See the file LICENSE for the
 full license text.
