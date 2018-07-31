@@ -1,18 +1,17 @@
+**************************************
 New Forms of Interaction - Summer 2018
-==========
-
-**********
-#NFOI
-**********
+**************************************
 
 Description text goes here ...
 Description text goes here ...
 Description text goes here ...
 Description text goes here ...
+
 
 Setup
 =========
 
+Setup text goes here ...
 Setup text goes here ...
 Setup text goes here ...
 Setup text goes here ...
@@ -36,9 +35,9 @@ conROLLER
 Project resources
 =================
 
-- `Website <>`_
-- `Source code <https://github.com/pimusicbox/pimusicbox>`_
-- `Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
+- _`Website <>`_
+- _`Source code <https://github.com/pimusicbox/pimusicbox>`_
+- _`Changelog <https://github.com/pimusicbox/pimusicbox/blob/master/changes.rst>`_
 
 
 License
@@ -46,5 +45,5 @@ License
 
 Copyright 2018 Brooklyn Research and contributors.
 
-Licensed under the MIT License, Version 2.0. See the file LICENSE for the
+Licensed under the MIT, Version 2.0. See the file LICENSE for the
 full license text.
