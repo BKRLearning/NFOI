@@ -50,13 +50,13 @@
 #define p1Right KEY_RIGHT
 #define p1Up KEY_UP
 #define p1Down KEY_DOWN
-#define p1Start KEY_SPACE
+#define p1Enter KEY_SPACE
 
 #define p2Left KEY_A
 #define p2Right KEY_D
 #define p2Up KEY_W
 #define p2Down KEY_S
-#define p2Start KEY_ENTER
+#define p2Enter KEY_ENTER
 
 // setup enter buttons, 1 per player
 Bounce enterP1 = Bounce(JUICER_P1_ENTER, 5);  // 5ms debounce
@@ -67,15 +67,19 @@ Bounce enterP2 = Bounce(JUICER_P2_ENTER, 5);  // 5ms debounce
 //
 // Setup Game Variables
 //
+// *** if totalPlayers is changed, you must modify define statments for juicer input pins, LED output pins, key press mappings, and enter buttons ***
+//
 
 #define totalPlayers 2
 #define totalJuicers (totalPlayers * 4)    // 4 juicers per player
-uint8_t juicerInputs[totalJuicers] = {JUICER_P1_LEFT, JUICER_P1_RIGHT, JUICER_P1_UP, JUICER_P1_DOWN, JUICER_P2_LEFT, JUICER_P2_RIGHT, JUICER_P2_UP, JUICER_P2_DOWN};
-uint8_t ledOutputs[totalJuicers] = {LED_P1_LEFT, LED_P1_RIGHT, LED_P1_UP, LED_P1_DOWN, LED_P2_LEFT, LED_P2_RIGHT, LED_P2_UP, LED_P2_DOWN};
-uint8_t outputKeys[totalJuicers] = {p1Left, p1Right, p1Up, p1Down, p2Left, p2Right, p2Up, p2Down};
 
-uint8_t enterInputs[totalPlayers] = {JUICER_P1_ENTER, JUICER_P2_ENTER};
+uint8_t juicerInputs[totalJuicers] = {JUICER_P1_LEFT, JUICER_P1_RIGHT, JUICER_P1_UP, JUICER_P1_DOWN, JUICER_P2_LEFT, JUICER_P2_RIGHT, JUICER_P2_UP, JUICER_P2_DOWN};
+uint8_t juicerOutputKeys[totalJuicers] = {p1Left, p1Right, p1Up, p1Down, p2Left, p2Right, p2Up, p2Down};
+
+uint8_t ledOutputs[totalJuicers] = {LED_P1_LEFT, LED_P1_RIGHT, LED_P1_UP, LED_P1_DOWN, LED_P2_LEFT, LED_P2_RIGHT, LED_P2_UP, LED_P2_DOWN};
+
 Bounce enterButtons[totalPlayers] = {enterP1, enterP2};
+uint8_t enterOutputKeys[totalPlayers] = {p1Enter, p2Enter};
 
 
 
@@ -181,9 +185,9 @@ void getEnterButtons() {
     enterButtons[i].update();
 
     if (enterButtons[i].fallingEdge()) {
-      Keyboard.press(JUICER_P1_ENTER);
+      Keyboard.press(enterOutputKeys[i]);
       delay(20);  // has to be long enough that keypress is registered by computer, min 20ms
-      Keyboard.release(JUICER_P1_ENTER);
+      Keyboard.release(enterOutputKeys[i]);
     }
   }
 }
@@ -205,7 +209,7 @@ void getJuicersPressed() {  // check if player has pressed juicer
     if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 15) { // actively pressing juicer if dif between previous and current val within 15
       juicersPressed[i] = true;
 
-      Keyboard.press(outputKeys[i]); // press corresponding output key, in order p1 L, R, U, D -> p2 L, R, U, D
+      Keyboard.press(juicerOutputKeys[i]); // press corresponding output key, in order p1 L, R, U, D -> p2 L, R, U, D
       digitalWrite(ledOutputs[i], HIGH);
     }
     delay(1);
@@ -215,7 +219,7 @@ void getJuicersPressed() {  // check if player has pressed juicer
 void getJuicersReleased() {  // check if juicer has been released after being pressed
   for (int i = 0; i < totalJuicers; i++) {
     if (!juicersPressed[i] && juicersReleased[i]) {
-      Keyboard.release(outputKeys[i]);
+      Keyboard.release(juicerOutputKeys[i]);
       digitalWrite(ledOutputs[i], LOW);
 
       // reset averaging array setup for that juicer
