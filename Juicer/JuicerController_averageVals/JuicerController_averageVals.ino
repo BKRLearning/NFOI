@@ -7,7 +7,8 @@ int baselineLeft;
 int currentValLeft;
 int previousValLeft;
 
-int pushedVals[10];
+int const arraySize = 6;
+int pushedVals[arraySize];
 int readIndex = 0;
 int total = 0;
 int average = 0;
@@ -15,14 +16,14 @@ int average = 0;
 long startMillisLeft;
 long currentMillisLeft;
 
-const long period = 10;
+const long period = 7;
 
 void setup() {
   Serial.begin(9600);
 
   startMillisLeft = millis();
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < arraySize; i++) {
     pushedVals[i] = 0;
   }
 
@@ -31,11 +32,11 @@ void setup() {
 
   // Get juicer baseline readings
   baselineLeft = analogRead(JUICER_LEFT);
-
   Serial.print("Baseline Left:");
   Serial.print(baselineLeft);
   Serial.println();
 
+  delay(1);
 }
 
 void loop() {
@@ -48,18 +49,15 @@ void loop() {
 
     if (juicerPressed) {
       total = total - pushedVals[readIndex];
-      pushedVals[readIndex] = currentValLeft;  //
+      pushedVals[readIndex] = currentValLeft;
       total = total + pushedVals[readIndex];
       readIndex++;
 
-      if (readIndex >= 10) {
+      if (readIndex >= arraySize) {
         readIndex = 0;
       }
 
-      average = total / 10;
-      Serial.print("avg: ");
-      Serial.print(average);
-      Serial.println();
+      average = total / arraySize;
       delay(2);
 
       if (abs(average - baselineLeft) <= 2) {
@@ -77,18 +75,19 @@ void loop() {
   }
 
   if (!juicerPressed && juicerReleased) {
-    Serial.println("LEFT");
-
-
-    for (int i = 0; i < 10; i++) {
+    Serial.println("Mouse click");
+    Mouse.click();
+    
+    // reset array setup
+    for (int i = 0; i < arraySize; i++) {
       pushedVals[i] = 0;
     }
+    total = 0;
 
-    Serial.println("We got here");
-    average = 0;
-
+    // reset state vals
     juicerPressed = false;
     juicerReleased = false;
   }
 
+  delay(1);
 }
