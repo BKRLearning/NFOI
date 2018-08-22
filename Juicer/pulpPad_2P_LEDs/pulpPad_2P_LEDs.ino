@@ -3,7 +3,7 @@
   Pulp Pad Controller
 
   Description text to go here...
-  ...
+  ... 
   ...
 
   Created August 14, 2018
@@ -13,15 +13,16 @@
   This code is free software under the MIT liscense, all text above must be included in any redistribution.
 
 ****************************************/
-
+ 
 
 //
-// Define input and output pins, default is 2p, 4 juicers + 1 enter button per player 
+//  Define input and output pins 
+//
+//  *** default is 2p, 4 juicers + 1 enter button per player -- add define statments for additional players, modify totalPlayers variable ***
 //
 
-#include <Bounce.h>
 
-// define input pins for juicers
+// input pins for juicers
 #define JUICER_P1_LEFT 23
 #define JUICER_P1_RIGHT 22
 #define JUICER_P1_UP 21
@@ -34,18 +35,20 @@
 #define JUICER_P2_DOWN 15
 #define JUICER_P2_ENTER 14
 
-// define output pins for LEDs
+// output pins for LEDs
 #define LED_P1_LEFT 4
 #define LED_P1_RIGHT 5
 #define LED_P1_UP 6
 #define LED_P1_DOWN 7
+#define LED_P1_ENTER 0
 
 #define LED_P2_LEFT 8
 #define LED_P2_RIGHT 9
 #define LED_P2_UP 10
 #define LED_P2_DOWN 11
+#define LED_P2_ENTER 0
 
-// define juicer key presses
+// key press outputs
 #define p1Left KEY_LEFT
 #define p1Right KEY_RIGHT
 #define p1Up KEY_UP
@@ -58,28 +61,24 @@
 #define p2Down KEY_S
 #define p2Enter KEY_ENTER
 
-// setup enter buttons, 1 per player
-Bounce enterP1 = Bounce(JUICER_P1_ENTER, 5);  // 5ms debounce
-Bounce enterP2 = Bounce(JUICER_P2_ENTER, 5);  // 5ms debounce
-
 
 
 //
 // Setup Game Variables
 //
-// *** if totalPlayers is changed, you must modify define statments for juicer input pins, LED output pins, key press mappings, and enter buttons ***
+// *** if totalPlayers is changed, modify define statments above for juicer input pins, LED output pins, key press mappings, and enter buttons ***
 //
 
 #define totalPlayers 2
-#define totalJuicers (totalPlayers * 4)    // 4 juicers per player
+#define totalJuicers ((totalPlayers * 4) + totalPlayers)    // 4 juicers + 1 start button per player
 
-uint8_t juicerInputs[totalJuicers] = {JUICER_P1_LEFT, JUICER_P1_RIGHT, JUICER_P1_UP, JUICER_P1_DOWN, JUICER_P2_LEFT, JUICER_P2_RIGHT, JUICER_P2_UP, JUICER_P2_DOWN};
-uint8_t juicerOutputKeys[totalJuicers] = {p1Left, p1Right, p1Up, p1Down, p2Left, p2Right, p2Up, p2Down};
+uint16_t juicerInputs[totalJuicers] = {JUICER_P1_LEFT, JUICER_P1_RIGHT, JUICER_P1_UP, JUICER_P1_DOWN, JUICER_P1_ENTER, JUICER_P2_LEFT, JUICER_P2_RIGHT, JUICER_P2_UP, JUICER_P2_DOWN, JUICER_P2_ENTER};
+uint16_t juicerOutputKeys[totalJuicers] = {p1Left, p1Right, p1Up, p1Down, p1Enter, p2Left, p2Right, p2Up, p2Down, p2Enter};
 
-uint8_t ledOutputs[totalJuicers] = {LED_P1_LEFT, LED_P1_RIGHT, LED_P1_UP, LED_P1_DOWN, LED_P2_LEFT, LED_P2_RIGHT, LED_P2_UP, LED_P2_DOWN};
+uint16_t ledOutputs[totalJuicers] = {LED_P1_LEFT, LED_P1_RIGHT, LED_P1_UP, LED_P1_DOWN, LED_P1_ENTER, LED_P2_LEFT, LED_P2_RIGHT, LED_P2_UP, LED_P2_DOWN, LED_P2_ENTER};
 
-Bounce enterButtons[totalPlayers] = {enterP1, enterP2};
-uint8_t enterOutputKeys[totalPlayers] = {p1Enter, p2Enter};
+/*uint16_t enterButtons[totalPlayers] = {JUICER_P1_ENTER, JUICER_P2_ENTER};
+uint16_t enterOutputKeys[totalPlayers] = {p1Enter, p2Enter};*/
 
 
 
@@ -87,11 +86,11 @@ uint8_t enterOutputKeys[totalPlayers] = {p1Enter, p2Enter};
 // Setup Arrays for Gameplay
 //
 
-// juicer pressed/released bools, to be in order L, R, U, D for p1 & p2
+// juicer pressed/released bools, to be in order L, R, U, D, Enter for p1 & p2
 byte juicersPressed[totalJuicers];
 byte juicersReleased[totalJuicers];
 
-// juicer analog readings, to be in order L, R, U, D for p1 & p2
+// juicer analog readings, to be in order L, R, U, D, Enter for p1 & p2
 uint16_t baselineVals[totalJuicers];
 uint16_t currentVals[totalJuicers];
 uint16_t previousVals[totalJuicers];
@@ -106,7 +105,7 @@ float averages[totalJuicers];
 // setup millis delay
 long startMillis;
 long currentMillis;
-const long period = 7;
+const long period = 10;
 
 
 
@@ -119,12 +118,12 @@ void setup() {
 }
 
 void loop() {
-  getEnterButtons(); // check if enters buttons have been pressed
 
   currentMillis = millis();
   if (currentMillis - startMillis >= period) {  // run this code every "period" (in ms)
 
-    getVals(); // get current vals for each juicer
+    //getEnterButtons(); // check if enters buttons have been pressed
+    getJuicerVals(); // get current vals for each juicer
 
     for (int i = 0; i < totalJuicers; i++) {
       if (juicersPressed[i]) {  // if a particular juicer was pressed, then...
@@ -140,7 +139,7 @@ void loop() {
         averages[i] = totals[i] / arraySize;
         delay(1);
 
-        if (abs(averages[i] - baselineVals[i]) <= 2) {  // check if the difference between the running avg and the baseline val for any juicer is within 2
+        if (abs(averages[i] - baselineVals[i]) <= 3)  {  // check if the difference between the running avg and the baseline val for any juicer is within 2
           juicersReleased[i] = true;
           juicersPressed[i] = false;
         }
@@ -164,7 +163,7 @@ void initJuicers() {  // get juicer baseline readings & initialize arrays and LE
 
     pinMode(ledOutputs[i], OUTPUT);
 
-    // arrays in order L, R, U, D for p1 & p2
+    // arrays in order L, R, U, D, E for p1 & p2
     juicersPressed[i] = false;
     juicersReleased[i] = false;
     currentVals[i] = 0;
@@ -180,20 +179,8 @@ void initJuicers() {  // get juicer baseline readings & initialize arrays and LE
   }
 }
 
-void getEnterButtons() {
-  for (int i = 0; i < totalPlayers; i++) {
-    enterButtons[i].update();
 
-    if (enterButtons[i].fallingEdge()) {
-      Keyboard.press(enterOutputKeys[i]);
-      delay(20);  // has to be long enough that keypress is registered by computer, min 20ms
-      Keyboard.release(enterOutputKeys[i]);
-    }
-  }
-}
-
-
-void getVals() {  // get current values for each juicer
+void getJuicerVals() {  // get current values for each juicer
   for (int i = 0; i < totalJuicers; i++) {
     previousVals[i] = currentVals[i];
     currentVals[i] = analogRead(juicerInputs[i]);
@@ -209,8 +196,13 @@ void getJuicersPressed() {  // check if player has pressed juicer
     if (!juicersReleased[i] && abs(previousVals[i] - currentVals[i]) >= 15) { // actively pressing juicer if dif between previous and current val within 15
       juicersPressed[i] = true;
 
-      Keyboard.press(juicerOutputKeys[i]); // press corresponding output key, in order p1 L, R, U, D -> p2 L, R, U, D
+      Keyboard.press(juicerOutputKeys[i]); // press corresponding output key, in order p1 L, R, U, D, E -> p2 L, R, U, D, E
       digitalWrite(ledOutputs[i], HIGH);
+
+      Serial.print("Juicer: ");
+      Serial.print(juicerInputs[i]);
+      Serial.print(" was pressed");
+      Serial.println();
     }
     delay(1);
   }
@@ -221,6 +213,11 @@ void getJuicersReleased() {  // check if juicer has been released after being pr
     if (!juicersPressed[i] && juicersReleased[i]) {
       Keyboard.release(juicerOutputKeys[i]);
       digitalWrite(ledOutputs[i], LOW);
+
+      Serial.print("Juicer: ");
+      Serial.print(juicerInputs[i]);
+      Serial.print(" was released");
+      Serial.println();
 
       // reset averaging array setup for that juicer
       for (int j = 0; j < arraySize; j++) {
