@@ -1,5 +1,5 @@
 ****
-#Kitchen Mania
+# Kitchen Mania
 ****
 Kitchen Mania uses screen-based game control as a starting point for understanding and exploring new methods of interacting with physical computer interfaces. It uses familiar household appliances and tools to produce novel forms of human-computer interaction that are intuitive and accessible.
 
